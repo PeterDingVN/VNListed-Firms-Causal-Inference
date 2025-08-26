@@ -6,6 +6,16 @@ from typing import Tuple
 
 class InputData:
     def __init__(self, df: pd.DataFrame, id_col: str, time_col: str, target: str, reg: bool):
+        '''
+
+        :param df: input dataframe
+        :param id_col: cross-sectional identity (exp: company)
+        :param time_col: time-series column (exp: year)
+        :param target: target/outcome/predicted var
+        :param reg: if True, regression metrics will be used for evaluation, else using classification's
+
+        '''
+
         self.df = df
         self.id_col = id_col
         self.time_col = time_col
@@ -34,7 +44,7 @@ class InputData:
 
         # if it's regression
         if self.reg:
-            for name, (algo, hyperpar) in algorithm.items():
+            for name, (algo, hyperpar) in algorithm_reg.items():
                 print(f'Processing {name} ...')
                 grid = GridSearchCV(algo,
                                     scoring=score_reg,
@@ -54,7 +64,7 @@ class InputData:
 
         # if classification task
         else:
-            for name, (algo, hyperpar) in algorithm.items():
+            for name, (algo, hyperpar) in algorithm_class.items():
                 print(f'Processing {name} ...')
                 grid = GridSearchCV(algo,
                                     scoring=score_class,
