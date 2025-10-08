@@ -23,13 +23,13 @@ score_reg = {
 
     # Algorithm
 xgb_param_reg = {
-    'n_estimators': [100, 200, 300],
-    'learning_rate': [0.05, 0.03],
-    'max_depth' : [8],
-    'subsample' : [0.5]
+    'algo__n_estimators': [100, 200, 300],
+    'algo__learning_rate': [0.05, 0.03],
+    'algo__max_depth' : [8],
+    'algo__subsample' : [0.5]
 }
 lrg_param_reg = {
-    'fit_intercept': [True, False]
+    'algo__fit_intercept': [True, False]
 }
 
     # Hyper params list
@@ -51,17 +51,17 @@ score_class = {
 
     # Algorithm
 xgb_param_class = {
-    'n_estimators': [100, 200],
-    'learning_rate': [0.05, 0.03],
-    'max_depth' : [5, 10],
-    'subsample' : [0.5],
-    'scale_pos_weight': [0.1, 0.15, 0.2, 0.3, 0.5]
+    'algo__n_estimators': [100, 200],
+    'algo__learning_rate': [0.05, 0.03],
+    'algo__max_depth' : [5, 10],
+    'algo__subsample' : [0.5],
+    'algo__scale_pos_weight': [0.1, 0.15, 0.2, 0.3, 0.5]
 }
 
 
 knn_param_class = {
-    'n_neighbors': [1, 3, 5, 7, 9],
-    'weights': ['uniform', 'distance']
+    'algo__n_neighbors': [1, 3, 5, 7, 9],
+    'algo__weights': ['uniform', 'distance']
 }
     # Hyper params list
 algorithm_class = {

@@ -2,6 +2,8 @@ from utils_dta_processing.default_libs import *
 from .hyperparams_ML import *
 from panelsplit.cross_validation import PanelSplit
 from sklearn.model_selection import GridSearchCV
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.pipeline import Pipeline
 from typing import Tuple
 
 class InputData:
@@ -46,8 +48,12 @@ class InputData:
         # if it's regression
         if self.reg:
             for name, (algo, hyperpar) in algorithm_reg.items():
+                pipe = Pipeline([
+                    ('scaler', MinMaxScaler()),
+                    ('algo', algo)
+                ])
                 print(f'Processing {name} ...')
-                grid = GridSearchCV(algo,
+                grid = GridSearchCV(pipe,
                                     scoring=score_reg,
                                     param_grid = hyperpar,
                                     cv=cv_strat,
@@ -66,8 +72,12 @@ class InputData:
         # if classification task
         else:
             for name, (algo, hyperpar) in algorithm_class.items():
+                pipe = Pipeline([
+                    ('scaler', MinMaxScaler()),
+                    ('algo', algo)
+                ])
                 print(f'Processing {name} ...')
-                grid = GridSearchCV(algo,
+                grid = GridSearchCV(pipe,
                                     scoring=score_class,
                                     param_grid = hyperpar,
                                     cv=cv_strat,
