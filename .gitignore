@@ -2,5 +2,6 @@
 .idea/
 
 # Ignore Python cache folders
-utils_dta_processing/__pycache__/
-utils_ml_train/__pycache__/
+utils/utils_dta_processing/__pycache__/
+utils/utils_ml_train/__pycache__/
+utils/utils_dl_train/__pycache__/

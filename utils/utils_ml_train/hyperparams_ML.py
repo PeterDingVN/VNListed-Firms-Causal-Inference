@@ -2,7 +2,7 @@ from sklearn.metrics import \
     roc_auc_score as roc_auc, precision_score as precision, recall_score as recall, \
     mean_absolute_percentage_error as mape, r2_score as r2, root_mean_squared_error as rmse, balanced_accuracy_score as accuracy, \
     make_scorer
-from sklearn.metrics import classification_report
+
 from sklearn.linear_model import LinearRegression as lrg
 from sklearn.neighbors import KNeighborsClassifier as knn
 from xgboost import XGBRegressor as xgb_reg, XGBClassifier as xgb_class
