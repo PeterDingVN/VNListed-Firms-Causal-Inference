@@ -31,6 +31,7 @@ class DataPreprocess:
 
         # Class given params
         self.timestep = timestep
+        self.val_size = val_size
         self.features = (features if isinstance(features, list) else [features])
         self.target = target
 
@@ -42,11 +43,10 @@ class DataPreprocess:
 
         ## Preprocess data
         ### Define test data
-        df_test_fin = df_test.sort_values(['company', 'year']).set_index(['company', 'year'])
-        self.test = df_test_fin
+        self.test = df_test.sort_values(['company', 'year']).set_index(['company', 'year'])
 
         ### Split input into train and val set
-        self.train, self.val = self.train_validation_split(df_input)
+        self.train, self.val = self.train_validation_split(df_input, self.val_size)
 
 
         ## Final scaled data

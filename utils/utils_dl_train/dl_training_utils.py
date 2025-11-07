@@ -1,6 +1,6 @@
 from utils.utils_dl_train import *
 from utils.utils_dta_processing import *
-from .dl_data_preprocess import DataPreprocess
+from utils.utils_dl_train.dl_data_preprocess import DataPreprocess
 
 # LSTM will:
 # Run LSTM model on data from DataPreprocess
@@ -11,6 +11,7 @@ class LSTM(DataPreprocess):
                  df_test: pd.DataFrame,
                  target: str,
                  features: str | list[str],
+                 model_name: str,
                  timestep: int = 1,
                  val_size: float = 0.15,
                  epochs: int = 150,
@@ -20,7 +21,7 @@ class LSTM(DataPreprocess):
                  ):
         # All params
         ## From DataPreprocess
-        super().__init__(df_input, df_test, target, features)
+        super().__init__(df_input, df_test, target, features, timestep, val_size)
         self.fea_len = len(features)
 
         ## From local
@@ -33,9 +34,9 @@ class LSTM(DataPreprocess):
         self.verbose = verbose
 
         ## Predicted result
-        self.y_train_hat = self.LSTM_model().predict(self.X_train_scaled).squeeze()
-        self.y_val_hat = self.LSTM_model().predict(self.X_val_scaled).squeeze()
-        self.y_test_hat = self.LSTM_model().predict(self.X_test_scaled).squeeze()
+        self.y_train_hat = self.LSTM_model(model_name).predict(self.X_train_scaled).squeeze()
+        self.y_val_hat = self.LSTM_model(model_name).predict(self.X_val_scaled).squeeze()
+        self.y_test_hat = self.LSTM_model(model_name).predict(self.X_test_scaled).squeeze()
 
     # Function to calculate Symmetric Mean Abs Perc Error
     @staticmethod
@@ -52,16 +53,30 @@ class LSTM(DataPreprocess):
         return float(np.mean(np.abs((y_true - y_pred) / denom)))
 
     # Build LSTM model
-    def LSTM_model(self):
-        model = Sequential([
-            layers.Input(shape=self.X_train_scaled.shape[1:]),
-            layers.Dense(16),
-            layers.LSTM(32, return_sequences=True),
-            layers.LSTM(64,  return_sequences=True),
-            layers.LSTM(64, return_sequences=False),
-            layers.Dense(16),
-            layers.Dense(1)
-        ])
+    def LSTM_model(self, model_name: str):
+        if model_name == 'roa':
+            model = Sequential([
+                layers.Input(shape=self.X_train_scaled.shape[1:]),
+                layers.Dense(16),
+                layers.LSTM(32, return_sequences=True),
+                layers.LSTM(64,  return_sequences=True),
+                layers.LSTM(64, return_sequences=False),
+                layers.Dense(16),
+                layers.Dense(1)
+            ])
+
+        elif model_name == 'roe':
+            model = Sequential([
+                layers.Input(shape=self.X_train_scaled.shape[1:]),
+                layers.LSTM(16, return_sequences=True),
+                layers.LSTM(16,  return_sequences=True),
+                layers.LSTM(32, return_sequences=False),
+                layers.Dense(32),
+                layers.Dense(1)
+            ])
+
+        else:
+            raise ValueError('Available model_names are: roa, roe')
 
         model.compile(
             optimizer=optimizers.Adam(learning_rate=0.0005),
