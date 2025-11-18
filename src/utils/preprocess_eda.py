@@ -73,7 +73,7 @@ def select_data(df: pd.DataFrame) -> pd.DataFrame:
     data_fin = pd.concat(data)
     return data_fin
 
-  except ValueError as e:
+  except Exception as e:
     return e
 
 

@@ -1,5 +1,5 @@
-from utils.utils_dta_processing.default_libs import *
-from .hyperparams_ML import *
+from src.utils.default_libs import *
+from src.training.normal_ml.hyperparams_ML import *
 from panelsplit.cross_validation import PanelSplit
 from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import MinMaxScaler

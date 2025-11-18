@@ -1,10 +1,6 @@
-from utils.utils_ml_train import (
-    ml_training_utils,
-    hyperparams_ML
-)
-from utils.utils_dta_processing.default_libs import panelsplit
-from .ml_training_utils import *
-from .hyperparams_ML import *
+from src.utils.default_libs import panelsplit
+from src.training.normal_ml.ml_training_utils import *
+from src.training.normal_ml.hyperparams_ML import *
 
 __all__ = [
     'lrg', 'knn', 'xgb_class', 'xgb_reg',  # all Ml algorithm used
