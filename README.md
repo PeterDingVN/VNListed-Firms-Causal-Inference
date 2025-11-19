@@ -1,17 +1,22 @@
 # 💲Financial Panel Predictive Modelling💲
 
 <div align ="center">
-Help individual and organizational investors better predict their portfolio
+
+> *Help individual and organizational investors better predict their portfolio*
+
+
+**[🧠 Motivation](#motivation)** • **[🏠 Project structure](#project-structure)** • **[🔎 Project details](#project-details)** • **[💡 Recommendation and usage](#recommendation-and-usage)** • **[❗Disclaimer](#disclaimer)**
+
 
 </div>
 
-## 🧠 Motivation
+## 🧠Motivation
 Forecasting financial performance of invested companies is important for investors, especially individual ones, most of whom have limited access to tools and skillsets needed. 
 
 Therefore, through this project, I want to aid those people in improving their investment strategy with up-to-date and accurate prediction about the future of their target companies.
 
 That said, organizational investors could still use this tool as an assistant, supporting them in building financial models. 
-## 🏠 Project structure
+## 🏠Project structure
 ```commandline
 project 
     ├── src/
@@ -62,7 +67,7 @@ project
 
 ```
 
-## 🔎 Project details
+## 🔎Project details
 ### Data scope
 This project aims to one-step forecast 5 financial metrics: Revenue, ROA, ROE, EBITDA, Value-add (which equals Revenue - cogs - sales expense - admin expense)
 
@@ -102,7 +107,7 @@ For ROE, best output was respectively 17% and 74%.
 Definitely, this model, trained on imbalanced panel data, could show unstable performance across different firms because some training firms did not appear in test set and vice versa. In the future, better data collection should be conducted or I must squeeze the scope of my model.
 
 
-## 💡 Recommendation and usage
+## 💡Recommendation and usage
 Due to imbalance in training data (not all 1500 companies have 10 years of data, and not all companies are included in both training and test set), 
 you should be careful when using the models for real-life application. 
 
@@ -110,7 +115,7 @@ For list of companies available for trusted prediction, check out ```/doc/pred_l
 
 For download and usage please check out ```/doc/Usage_Instruction.md```.
 
-## ❗ Disclaimer
+## ❗Disclaimer
 This project does not mean investment suggestion by any means. For optimal real-life application, please consider this as a supporting tool only, aiding in your own analysis of stocks.
 
 This project is open for public use, including educational, commercial purposes and more. And you can either mention my repo or name as you wish (but this is not compulsory).
