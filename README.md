@@ -11,7 +11,7 @@
 ![Language](https://img.shields.io/badge/language-python-green)
 ![Deploy](https://img.shields.io/badge/deployment-docker-blue)
 ![Field](https://img.shields.io/badge/topic-finance-gold)
-![Models](https://img.shields.io/badge/models-xgb%20%7C%20lstm%20%7C%20linear_regression-lightgray.svg)
+![Models](https://img.shields.io/badge/models-xgb%20%7C%20lstm%20%7C%20linear_regression-orange)
 
 </div>
 
