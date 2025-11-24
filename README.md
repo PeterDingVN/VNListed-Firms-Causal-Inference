@@ -25,6 +25,7 @@ That said, organizational investors could still use this tool as an assistant, s
 ```commandline
 project 
     ├── src/
+    │   ├── model/
     │   ├── utils/
     │   ├── requirement.txt
     │   └── training/
@@ -35,10 +36,7 @@ project
     │   ├── CHANGELOG.md
     │   ├── CONTRIBUTION.md
     │   └── Usage_Instruction.md
-    ├── model/
     ├── notebook/
-    │   ├── eda/
-    │   └── training/
     ├── results/
     ├── .gitignore
     └── README.md
