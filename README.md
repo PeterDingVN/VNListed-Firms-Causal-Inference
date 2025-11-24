@@ -8,10 +8,10 @@
 **[🧠 Motivation](#motivation)** • **[🏠 Project structure](#project-structure)** • **[🔎 Project details](#project-details)** • **[💡 Recommendation and usage](#recommendation-and-usage)** • **[❗Disclaimer](#disclaimer)**
 
 ![Version](https://img.shields.io/badge/version-1.0.0-red)
-![Language](https://img.shields.io/badge/language-python-green)
-![Deploy](https://img.shields.io/badge/deployment-docker-blue)
+![License](https://img.shields.io/badge/license-MIT-purple)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20-1a2c80)
 ![Field](https://img.shields.io/badge/topic-finance-gold)
-![Models](https://img.shields.io/badge/models-xgb%20%7C%20lstm%20%7C%20linear_regression-orange)
+
 
 </div>
 
