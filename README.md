@@ -25,16 +25,16 @@ That said, organizational investors could still use this tool as an assistant, s
 ```commandline
 project 
     ├── src/
-    │   ├── model/
+    │   ├── app/
+    │       ├── model/
+    │       └── mlflow.py
     │   ├── utils/
     │   ├── requirement.txt
     │   └── training/
-    │       ├── deep_ml/
-    │       └── normal_ml/
     ├── data/
     ├── doc/
-    │   ├── CHANGELOG.md
-    │   ├── CONTRIBUTION.md
+    │   ├── LICENSE.txt
+    │   ├── pred_list.txt
     │   └── Usage_Instruction.md
     ├── notebook/
     ├── results/
@@ -47,8 +47,8 @@ project
 ### Data scope
 This project aims to one-step forecast 5 financial metrics: Revenue, ROA, ROE, EBITDA, Value-add (which equals Revenue - cogs - sales expense - admin expense)
 
-Data is collected from around 1500 Vietnamese listed firms across HOSE, HNX, UPCoM, OTC, PRIVATE in 10 years from 2015
-to 2024. All data was collected from FiinProX.
+The data in use has panel structure with annual data collected from around 1500 Vietnamese listed companies in Vietnam from 2015
+to 2024. These companies come from all platforms HNX, HOSE, UpCoM, PRIVATE, OTC.
 
 ### Data cleaning method
 In this project, I ensured my data against missing values, high multicollinearity, outliers using various methods.
@@ -89,7 +89,7 @@ you should be careful when using the models for real-life application.
 
 For list of companies available for trusted prediction, check out ```/doc/pred_list.txt```
 
-For download and usage please check out ```/doc/Usage_Instruction.md```.
+For download, usage and more detailed recommendation, please check out ```/doc/Usage_Instruction.md```.
 
 ## ❗Disclaimer
 This project does not mean investment suggestion by any means. For optimal real-life application, please consider this as a supporting tool only, aiding in your own analysis of stocks.
