@@ -1,19 +1,28 @@
 from src.utils.default_libs import *
 '''
-
 Prep_scraped data is used to preprocess raw data downloaded from FiinProX, so please DO NOT make
-any changes to the data scraped from FiinProX before Inserting it into this function
-This function then helps reshape the data into proper structure (panel) instead of doing advanced cleaning
-
+any changes to the data scraped from FiinProX before Inserting it into this function.
+This function then helps reshape the data into proper structure (panel) not advanced cleaning.
 '''
+
 def prep_scraped_data(path):
 
     '''
-
     :param path: path to excel file
     :return: dataframe
 
+    Note:
+    - this only works with raw excel files with distinctive structure of FiinProX
+    - the input file must have one sheet only
     '''
+
+    # Check for sheet number
+    try:
+        xls = len(pd.ExcelFile(path).sheet_names)
+        if xls > 1:
+            return ValueError('excel file accepts only one sheet')
+    except ValueError:
+        return "Only excel file type is accepted"
 
     # Load data
     try:
@@ -28,10 +37,9 @@ def prep_scraped_data(path):
     # Define id_cols
     id_col = []
     for col in df_unpivot.columns:
-        if not re.search(r'\d{4}', col):
+        if not re.search(r'Năm:\s*\d{4}', col):
             id_col.append(col)
 
-    # Process
     # Unpivot table
     df_unpivot = df_unpivot.melt(id_vars=id_col, value_vars=df_unpivot.drop(columns=id_col).columns)
 
@@ -45,8 +53,6 @@ def prep_scraped_data(path):
     df_unpivot['vars_mini'] = df_unpivot['variable'].apply(
         lambda x: re.sub(r'\d+\.', '', x.split('\n')[0]).strip()
     )
-
-    # drop 'variable' column
     df_unpivot.drop(columns='variable', inplace=True)
 
     # pivot columns based on vars_mini
@@ -57,13 +63,24 @@ def prep_scraped_data(path):
 
     return df_final
 
-# Col translation
 '''
-This function below helps translate Vietnamese col name into English name if any
+
+"translation" helps translate Vietnamese col name into English name if any
+
 '''
 
 def translation(df: pd.DataFrame):
+    '''
+
+    Args:
+        df: input the table with VNese col names
+    Returns:
+        df: return table with VNese cols translated into English
+
+    '''
     df = df.copy()
+
+    # Translation dict
     df = df.rename(columns={
         "Mã": "company",
         "Sàn": "platform",
@@ -102,6 +119,7 @@ def translation(df: pd.DataFrame):
         "I. NỢ PHẢI TRẢ": "lia"
     })
 
+    # Extended translation in the existence of prticular col combos
     all_cols = df.columns.tolist()
     if all(col in all_cols for col in ['cogs', 'sales_cost', 'admin_cost']):
         df['expense'] = df['cogs'] + df['sales_cost'] + df['admin_cost']
