@@ -19,7 +19,7 @@ expense: cogs + sales_cost + admin_cost (chi phí hoạt động doanh nghiệp)
 short_receive: Các khoản phải thu ngắn hạn
 cash: Tiền và tương đương tiền
 other_short_asset: Tài sản ngắn hạn khác
-in_stock: Hàng tồn kho ròng
+in_stock: Hàng tồn kho, ròng
 
 long_receive: Phải thu dài hạn
 other_long_asset: Tài sản dài hạn khác

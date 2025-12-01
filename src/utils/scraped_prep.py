@@ -37,7 +37,7 @@ def prep_scraped_data(path):
     # Define id_cols
     id_col = []
     for col in df_unpivot.columns:
-        if not re.search(r'Năm:\s*\d{4}', col):
+        if not re.search(r'\b\d{4}', col):
             id_col.append(col)
 
     # Unpivot table
@@ -45,7 +45,7 @@ def prep_scraped_data(path):
 
     # Add year cols
     df_unpivot['year'] = df_unpivot['variable'].apply(
-      lambda x: re.search(r'\d{4}', x).group()
+      lambda x: re.search(r'\b\d{4}', x).group()
     )
     df_unpivot['year'] = pd.to_numeric(df_unpivot['year'], errors='coerce')
 
@@ -93,11 +93,12 @@ def translation(df: pd.DataFrame):
         "ROCE %": "roce",
         "Giá vốn hàng bán": "cogs",
         "Chi phí bán hàng": "sales_cost",
-        "Chi phí quản lý doanh nghiệp": "admin_cost",
+        "Chi phí quản lý doanh  nghiệp": "admin_cost",  # typo: redundant space
+        "Chi phí quản lý doanh nghiệp": "admin_cost",   # This ensure smooth running when Fiinpro fixes
         "Các khoản phải thu ngắn hạn": "short_receive_lag1",
         "Tiền và tương đương tiền": "cash",
         "Tài sản ngắn hạn khác": "other_short_asset_lag1",
-        "Hàng tồn kho ròng": "in_stock_lag1",
+        "Hàng tồn kho, ròng": "in_stock_lag1",
         "Phải thu dài hạn": "long_receive_lag1",
         "Tài sản dài hạn khác": "other_long_asset_lag1",
         "Đầu tư dài hạn": "long_invest_lag1",
@@ -108,8 +109,8 @@ def translation(df: pd.DataFrame):
         "Nợ ngắn hạn": "short_liability_lag1",
         "Vốn và các quỹ": "equity_fund",
         "Nguồn kinh phí và quỹ khác": "other_fund_lag1",
-        "Tỷ lệ sở hữu nhà nước": "gov_own_lag1",
-        "Tỷ lệ sở hữu nước ngoài": "for_own_lag1",
+        "Tỷ lệ sở hữu nhà nước": "gov_own_lag1",  # Dummy var
+        "Tỷ lệ sở hữu nước ngoài": "for_own_lag1",  # dummy var
         "Phân ngành - ICB L1": "industry",
         "II. VỐN CHỦ SỞ HỮU": "equity",
         "A. TỔNG CỘNG TÀI SẢN": "tot_asset",
@@ -123,24 +124,29 @@ def translation(df: pd.DataFrame):
     all_cols = df.columns.tolist()
     if all(col in all_cols for col in ['cogs', 'sales_cost', 'admin_cost']):
         df['expense_lag1'] = df['cogs'] + df['sales_cost'] + df['admin_cost']
-    elif all(col in all_cols for col in ['revenue_lag1', 'cogs', 'sales_cost', 'admin_cost']):
+    if all(col in all_cols for col in ['revenue_lag1', 'cogs', 'sales_cost', 'admin_cost']):
         df['value_add_lag1'] = df['revenue_lag1'] - (df['cogs'] + df['sales_cost'] + df['admin_cost'])
-    elif "net_op_profit" in all_cols:
+    if "net_op_profit" in all_cols:
         df['loss'] = df['net_op_profit'].apply(lambda x: 0 if x <=0 else 1)
-    elif all(col in all_cols for col in ['cash', 'tot_asset']):
+    if all(col in all_cols for col in ['cash', 'tot_asset']):
         df['liq'] = df['cash']/ df['tot_asset']
         df['size'] = np.log(df['tot_asset']+1)
-    elif all(col in all_cols for col in ['cogs', 'sales_cost', 'admin_cost', 'tot_asset']):
+    if all(col in all_cols for col in ['cogs', 'sales_cost', 'admin_cost', 'tot_asset']):
         df['oea'] = (df['cogs'] + df['sales_cost'] + df['admin_cost'])/df['tot_asset']
-    elif all(col in all_cols for col in ['short_debt', 'long_debt', 'equity']):
+    if all(col in all_cols for col in ['short_debt', 'long_debt', 'equity']):
         df['d/e'] = (df['short_debt']+df['long_debt'])/df['equity']
-    elif all(col in all_cols for col in ['equity', 'tot_asset']):
+    if all(col in all_cols for col in ['equity', 'tot_asset']):
         df['asset/equity'] = df['tot_asset']/df['equity']
-    elif all(col in all_cols for col in ['cash', 'equity', 'tot_asset']):
+    if all(col in all_cols for col in ['cash', 'equity', 'tot_asset']):
         df['cash&equi_to_asset'] = (df['cash']+df['equity'])/df['tot_asset']
-    elif all(col in all_cols for col in ['emp_num', 'tot_asset']):
+    if all(col in all_cols for col in ['emp_num', 'tot_asset']):
         df['a/w'] = df['tot_asset']/df['emp_num']
-    elif all(col in all_cols for col in ['lia', 'tot_asset']):
+    if all(col in all_cols for col in ['lia', 'tot_asset']):
         df['asset/lia'] = df['tot_asset']/df['lia']
+    if 'gov_own_lag1' in all_cols:
+        df['gov_own_lag1'] = df['gov_own_lag1'].notna().astype(int)
+    if 'for_own_lag1' in all_cols:
+        df['for_own_lag1'] = df['for_own_lag1'].notna().astype(int)
+
 
     return df

@@ -37,12 +37,14 @@ def col_list(metric):
 
 
 def col_trans(path):
+    # Raw file
     df = pd.read_excel(path)
 
-    if all("Unnamed" in col for col in df.columns) or any(re.search(r'Năm:\s*\d{4}', col) for col in df.columns):
+    # Trans peformed
+    if all("Unnamed" in col for col in df.columns) or any(re.search(r'\b\d{4}', col) for col in df.columns):
         df = prep_scraped_data(path)
-
     df = translation(df)
+
     return df
 
 

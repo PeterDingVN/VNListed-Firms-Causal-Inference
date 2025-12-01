@@ -58,19 +58,27 @@ uploaded_file = st.file_uploader(
 predict_button = st.button("Predict", icon="📈")
 
 # Page logic
-status = st.empty()
+st2 = st.empty()
+
 if predict_button:
     if uploaded_file is None:
-        st.error("❌ No file uploaded. Please upload an Excel file.")
+        st2.error("❌ No file uploaded. Please upload an Excel file.")
     else:
         # Phase 1: data verification
-        status.success("Checking data...")
+        st2.success("Checking data...")
+
+        ## One sheet only policy
+        if not len(pd.ExcelFile(uploaded_file).sheet_names) == 1:
+            st2.empty()
+            st.error("❌ Please upload excel file with only one sheet")
+            st.stop()
+
+        ## List of col and data basic clean
         req_col = col_list(metric)
         df = translation(pd.read_excel(uploaded_file))
 
         ## Case when data input is cleaned
         if all(col in df.columns for col in req_col):
-            # ensure correct col order
             df = df[req_col]
 
         ## Case when users input original data scraped from FiinProX
@@ -81,18 +89,21 @@ if predict_button:
 
         ## Case other than those cases (irrelevant or wrong formatted data)
             except Exception:
-                status.empty()
-                st.error(f"Please make sure your data start at A1, or else, not intervened since download from FiinProX"
-                         f"and check your data columns if they match required col: {req_col}. "
-                         f"For variable meaning checkout data/var_definition.txt")
+                st2.empty()
+                st.error(f"❌ Please make sure your data start at A1, or else, not intervened since download from FiinProX."
+                         f"\nPlease check your data columns if they match required col: {req_col}. "
+                         f"\nFor equivalent Vietnamese name of the columns, check out /data/var_definition.txt")
+                st.stop()
 
         ## check for null
-        if df.isna().sum().sum():
-            st.error("Input data contains missing values, please fill the data or drop the entire row")
+        if df.shape[0] <= 0 or df.isna().sum().sum()>0:
+            st2.empty()
+            st.error("❌ Columns are matched but input data contains missing values, "
+                     "please fill the data or drop the entire row")
+            st.stop()
 
-        status.empty()
-        st.success(f"{df.columns}, {df.head()}")
-
+        st2.empty()
+        st.success(f'{df.columns}')
 
 
         # # Phase 2: pred making using models
