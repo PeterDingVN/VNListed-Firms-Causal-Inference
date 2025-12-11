@@ -3,3 +3,6 @@
 
 # Ignore Python cache folders
 __pycache__/
+
+# ignore test run file
+exe.py
