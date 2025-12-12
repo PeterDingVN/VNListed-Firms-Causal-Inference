@@ -1,11 +1,12 @@
 FROM python:3.11
 
-WORKDIR /src
+WORKDIR /app
 
-COPY src/ .
+COPY src/ ./src
 COPY exe.py .
+COPY requirement.txt .
 RUN pip install --no-cache-dir -r requirement.txt
 
-EXPOSE 3000
+EXPOSE 8501
 
-CMD ["python", "exe.py"]
+CMD ["python", "exe.py", "--server.address=0.0.0.0"]
