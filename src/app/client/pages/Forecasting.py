@@ -1,6 +1,7 @@
 import streamlit as st
 from src.app.server import *
 import pickle as pk
+import tensorflow as tf
 
 # Page config
 st.title("Forecasting")
@@ -113,20 +114,20 @@ if predict_button:
 
         ## Predict revenue, ebitda, value_add
         if metric in ['EBITDA', 'Value_add', 'Revenue']:
-            with open(f'src\\app\\model\\{metric.lower()}.pkl', 'rb') as f:
+            with open(f'src/app/model/{metric.lower()}.pkl', 'rb') as f:
                 model = pk.load(f)
             ### Main
             output = model.predict(df)
             if metric == 'Revenue':
                 output = np.exp(output)
         else:
-            with open(f'src\\app\\model\\{metric.lower()}\\{metric.lower()}_prepro.pkl', 'rb') as f:
+            with open(f'src/app/model/{metric.lower()}/{metric.lower()}_prepro.pkl', 'rb') as f:
                 prepro = pk.load(f)
             ### Preprocess input data
             df2 = prepro.transform(df)
             df2 = df2.reshape(df2.shape[0], 1, df2.shape[1])
             ### Main
-            model = tf.keras.models.load_model(f'src\\app\\model\\{metric.lower()}\\{metric.lower()}_model.keras')
+            model = tf.keras.models.load_model(f'src/app/model/{metric.lower()}/{metric.lower()}_model.keras')
             output = model.predict(df2)
 
 
@@ -135,6 +136,9 @@ if predict_button:
         # Phase 3: return result
         out_data = pd.DataFrame(output, columns=[metric])
         out_data[['company', 'year']] = df.reset_index()[['company', 'year']]
+        out_data[metric] = out_data[metric].apply(
+            lambda x: f"{x:,.3f}"
+        )
 
         st2.success("Loading result ...")
         st.dataframe(out_data[['company', 'year', metric]])
