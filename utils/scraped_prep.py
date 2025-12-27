@@ -1,4 +1,4 @@
-from src.utils.default_libs import *
+from utils.default_libs import *
 '''
 Prep_scraped data is used to preprocess raw data downloaded from FiinProX, so please DO NOT make
 any changes to the data scraped from FiinProX before Inserting it into this function.
