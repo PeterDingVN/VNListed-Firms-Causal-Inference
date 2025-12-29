@@ -3,3 +3,8 @@
 
 # Ignore Python cache folders
 __pycache__/
+
+# Ignore irre files
+data/
+notebook/
+utils/
