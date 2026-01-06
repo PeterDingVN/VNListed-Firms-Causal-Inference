@@ -4,7 +4,7 @@ from sklearn.linear_model import Lasso, LinearRegression
 from scipy.stats import norm
 
 
-def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
+def cluster_lasso(X, y, c=1.1, max_iter=15):
     """
     Cluster Lasso for feature selection in HD-Panel data. The construction is based on Belloni (2015).
 
@@ -29,7 +29,7 @@ def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
     p = X.shape[1]  # Number of features
 
     # =========================================================================
-    # STEP 1: Demean X and y by individual within group mean
+    # STEP 1: Eliminate fixed effect by demeaning
     # =========================================================================
 
     # y_dot_it = y_it - mean(y_i)
@@ -60,7 +60,7 @@ def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
     selected_indices = []
 
     for k in range(max_iter):
-        # Phi_j
+    # B. Phi_j cal
 
         # 1. Compute product of X and residuals element-wise
         product_term = X_dot.multiply(residuals.squeeze(), axis=0)
@@ -81,10 +81,12 @@ def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
 
         # Run Lasso
         # fit_intercept=False because data is already demeaned
-        lasso_model = Lasso(alpha=alpha_val, fit_intercept=False, tol=tol, selection='random')
+        lasso_model = Lasso(alpha=alpha_val, fit_intercept=False)
         lasso_model.fit(X_scaled, y_dot)
 
         # Transform coefficients back: Beta = Beta_new / Phi
+        # X_scaled * B_scaled = X_dot/ phi * B_scaled = X_dot * B_dot
+        # Therefore -> B_scaled/phi = B_dot
         beta_current = pd.Series(lasso_model.coef_, index=X.columns) / phi_loadings
 
         # D. Update Residuals
@@ -94,7 +96,9 @@ def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
         # E. Check Stability / Convergence (Condition R')
         # -----------------------------------------------
         # Check if the set of selected variables (support) has stabilized
-        new_selected_indices = beta_current[beta_current > 1e-8].index.tolist()
+        # If no change after the run -> converged already (run 1 -> run 2 = no change = converged)
+
+        new_selected_indices = beta_current[abs(beta_current) > 1e-8].index.tolist()
 
         if set(new_selected_indices) == set(selected_indices) and k > 0:
             print(f"Converged at iteration {k + 1}")
@@ -102,6 +106,7 @@ def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
             break
 
         selected_indices = new_selected_indices
+
 
     else:
         print("Max iterations reached.")
@@ -128,4 +133,4 @@ def cluster_lasso(X, y, c=1.1, max_iter=100, tol=1e-6):
     beta_final = pd.Series(0.0, index=X.columns)
     beta_final[final_features] = post_lasso_model.coef_
 
-    return final_features
+    return beta_final[final_features]
