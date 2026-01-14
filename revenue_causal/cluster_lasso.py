@@ -119,7 +119,8 @@ def cluster_lasso(X, y, c=1.1, max_iter=15):
     final_features = selected_indices
 
     if len(final_features) == 0:
-        print("No features selected. Returning zero coefficients.")
+        return "No features selected. Returning zero coefficients."
+
 
     # Slice the demeaned data to only selected features
     X_subset = X_dot[final_features]
