@@ -76,8 +76,8 @@ def cluster_lasso(X, y, c=1.1, max_iter=15):
 
     # C. Run Weighted Lasso
         # Scale X by penalty loadings
-        X_scaled = X_dot / phi_loadings
-        alpha_val = lambda_param / N_obs
+        X_scaled = X_dot / phi_loadings     # X_input
+        alpha_val = lambda_param / N_obs    # Given lambda/nT
 
         # Run Lasso
         # fit_intercept=False because data is already demeaned

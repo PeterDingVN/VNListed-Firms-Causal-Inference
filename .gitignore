@@ -5,6 +5,5 @@
 __pycache__/
 
 # Ignore irre files
-data/
 notebook/
 utils/
