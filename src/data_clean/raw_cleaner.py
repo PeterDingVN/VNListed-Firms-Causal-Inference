@@ -28,7 +28,7 @@ def prep_scraped_data(path):
     except Exception:
         df = pd.read_excel(path)
 
-    df_unpivot = df.drop(columns=['STT', 'Tên công ty'])
+    df_unpivot = df.drop(columns=['STT', 'Tên công ty', 'Sàn'])
 
     # Define id_cols (time invariant columns)
     id_col = []
@@ -66,7 +66,7 @@ def prep_scraped_data(path):
 
     # clean variable column by adding 'vars_mini' column
     df_unpivot['vars_mini'] = df_unpivot['variable'].apply(
-        lambda x: re.sub(r'^[^.]*\.', '', x.split('\n')[0]).strip()
+        lambda x: re.sub(r'^(?:\d+(?:\.\d+)*|[IVXLCDM]+)\b\.?', '', x.split('\n')[0]).strip()
     )
     df_unpivot.drop(columns='variable', inplace=True)
 
@@ -79,9 +79,9 @@ def prep_scraped_data(path):
     return df_final
 
 # Luu ý là: Quý 1 tách rời Năm 2015 Fiin nên caanf làm lại
-# df1 = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\FiinProX_DE_Doanh_nghiep_20260120 (12).xlsx')
-# df2 = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\cash_flow_FCF_(OPTIONAL).xlsx')
-# df = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\FiinProX_DE_Doanh_nghiep_20260120 (13).xlsx')
+# df = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\FiinProX_DE_Doanh_nghiep_20260120 (12).xlsx')
+# df = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\cash_flow_FCF_(OPTIONAL).xlsx')
+# df = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\FiinProX_DE_Doanh_nghiep_20260120 (5).xlsx')
 # print(df.shape)
 # print(df.columns)
 # print(df.head(5))
