@@ -33,17 +33,31 @@ def prep_scraped_data(path):
     # Define id_cols (time invariant columns)
     id_col = []
     for col in df_unpivot.columns:
-        if not re.search( r'Q[1-4]\.\d{4}', col):
+        if not (re.search( r'Q[1-4]\.\d{4}', col) or
+                re.search(r'Quý:\s*Q[1-4]\s*\nNăm:\s*\d{4}', col)):
             id_col.append(col)
 
     # Unpivot table
     df_unpivot = df_unpivot.melt(id_vars=id_col, value_vars=df_unpivot.drop(columns=id_col).columns)
 
     # Add date cols
+    ## Take date portion out
     df_unpivot['datetime'] = df_unpivot['variable'].apply(
-      lambda x: re.search( r'Q[1-4]\.\d{4}', x).group()
+      lambda x:(
+      m.group()
+      if (m := re.search(r'Q[1-4]\.\d{4}', x))
+      else re.search(r'Quý:\s*Q[1-4]\s*\nNăm:\s*\d{4}', x).group()
+      )
     )
-    df_unpivot[['quar', 'yr']] = df_unpivot['datetime'].str.split('.', expand=True)
+
+    ## 2 cases of handling
+    ## Idea: get 1 and 2015 out first -> arrange 2015Q1
+    df_unpivot['quar'] = df_unpivot['datetime'].apply(
+        lambda x: re.search(r'(Q[1-4])', x).group()
+    )
+    df_unpivot['yr'] = df_unpivot['datetime'].apply(
+        lambda x: re.search(r'(\d{4})', x).group()
+    )
     df_unpivot['date'] = df_unpivot['yr'] + df_unpivot['quar']
     df_unpivot['date'] = pd.PeriodIndex(df_unpivot['date'], freq='Q')
     df_unpivot['date'] = df_unpivot['date'].dt.to_timestamp()
@@ -52,7 +66,7 @@ def prep_scraped_data(path):
 
     # clean variable column by adding 'vars_mini' column
     df_unpivot['vars_mini'] = df_unpivot['variable'].apply(
-        lambda x: re.sub(r'\d+\.', '', x.split('\n')[0]).strip()
+        lambda x: re.sub(r'^[^.]*\.', '', x.split('\n')[0]).strip()
     )
     df_unpivot.drop(columns='variable', inplace=True)
 
@@ -64,7 +78,10 @@ def prep_scraped_data(path):
 
     return df_final
 
-# df = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\cash_flow_FCF_(OPTIONAL).xlsx')
+# Luu ý là: Quý 1 tách rời Năm 2015 Fiin nên caanf làm lại
+# df1 = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\FiinProX_DE_Doanh_nghiep_20260120 (12).xlsx')
+# df2 = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\cash_flow_FCF_(OPTIONAL).xlsx')
+# df = prep_scraped_data(r'C:\Users\HP\.0_PycharmProjects\Vnlisted_causal\data\FiinProX_DE_Doanh_nghiep_20260120 (13).xlsx')
 # print(df.shape)
 # print(df.columns)
 # print(df.head(5))
